@@ -9,7 +9,18 @@ export const ormConfig = async (
 ): Promise<TypeOrmModuleOptions> => {
   const dbConfig =
     configService.get<ConfigType<typeof databaseConfig>>('database');
+
+  if (!dbConfig) {
+    throw new Error(
+      ' Database configuration is missing. Check your .env and ConfigModule setup.',
+    );
+  }
+
   const isProd = configService.get<string>('NODE_ENV') === 'production';
+
+  console.log(' Loaded DB HOST from config service:', dbConfig.host);
+  console.log(' Loaded DB PORT from config service:', dbConfig.port);
+
   return {
     type: 'mysql',
     host: dbConfig.host,
